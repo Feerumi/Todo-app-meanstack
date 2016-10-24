@@ -1,11 +1,89 @@
-<html ng-app>
+<!DOCTYPE html>
+<html ng-app="todoApp">
     <head>
         <title>Todo app</title>
-        <script src="/node_modules/angular/angular.js"></script>
+        <script src="./js/jquery.min.js"></script>
+        <script src="./js/materialize.min.js"></script>
+        <script src="./js/angular/angular.min.js"></script>
+        <script src="./js/angular/angular-route.min.js"></script>
+        <script src="./js/angular/angular-resource.min.js"></script>
+        <script src="todocontroller.js" type="text/javascript"></script>
+        <script src="script.js" type="text/javascript"></script>
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="./css/materialize.min.css"  media="screen,projection"/>
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
-        <div>
-            <h1>Todo app</h1>
+        <div ng-controller="ListCtrl" class="container">
+          <h1>TODO APP</h1>
+          <ul class="collapsible" data-collapsible="accordion">
+            <li ng-repeat="list in lists | orderBy: 'listName'">
+              <div class="collapsible-header">
+                <h5>{{list.listName}}</h5>
+                <button  class="btn waves-effect waves-light" ng-click="getTasks(list._id)">Open</button>
+                <button class="btn waves-effect waves-light red" ng-click="removeList(list._id)">Delete list</button>
+                </div>
+              <div class="collapsible-body">
+                <div ng-if="isLoaded">
+                  <table class="bordered">
+                      <thead>
+                        <td data-field="done">Done</td>
+                        <td data-field="taskText">Task</td>
+                        <td data-field="priority">Priority</td>
+                      </thead>
+                      <tbody ng-repeat="task in tasks | orderBy: 'listName'">
+                        <tr>
+                          <td>
+                            <button  class="btn waves-effect waves-light" 
+                                     ng-click="removeTask(list._id, task._id)">Done</button>
+                            </td>
+                          <td>{{task.taskText}}</td>
+                          <td>{{task.priority}}</td>
+                        </tr>
+                      </tbody>
+                      </table>
+                </div>
+                <div class="section card-panel">
+                  <h3>Add new task</h3>
+                  <div class="row">
+                  <form ng-submit="addTask(list._id, newTask)" class="col s12 m12 l12">
+                      <div class="row">
+                        <div class="input-field col s12 m12 l6">
+                          <input id="text" type="text" placeholder="Wash clothes." ng-model="newTask.text">
+                          <label class="active">Task text</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                          <input id="number" type="number" placeholder="1" ng-model="newTask.priority">
+                          <label class="active">Priority number</label>
+                        </div>
+                        <div class="row">
+                          <div class="input-field col s12 m4 l4">
+                            <button  class="btn waves-effect waves-light" type="submit">Add</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <h3>Add new list</h3>
+          <div class="row">
+          <form ng-submit="saveList(list)" class="col s12 m12 l12">
+            <div class="row">
+              <div class="input-field col s6 m6 l6">
+                <input type="text" placeholder="Shopping list" ng-model="list.listName"></input>
+                <label class="active">List name</label>
+                </div>
+            </div>
+            <div class="row">
+              <button type="submit" 
+                      class="btn wave-effect waves-light">Add list</button>
+            </div>
+          </form>
         </div>
     </body>
 </html>
